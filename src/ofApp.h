@@ -38,7 +38,7 @@ class ofApp : public ofBaseApp{
 		int								videoWidth;
 		int								videoHeight;
 		ofxIntSlider					delay;
-		//ofxLabel						fps;
+		ofxLabel						fps;
 		ofxPanel						gui;
 		ofTrueTypeFont					verdana30;
 		int desiredFrameRate;

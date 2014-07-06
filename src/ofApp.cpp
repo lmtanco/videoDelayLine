@@ -1,6 +1,9 @@
 #include "ofApp.h"
 #include <iostream>
-
+static unsigned long long timeThen = 0;
+static unsigned long long timeNow = 0;
+static bool FirstTime = true;
+static double framesPerSecond = 0;
 
 //--------------------------------------------------------------
 ofApp::ofApp(int _initial_buffer_capacity, int max_buffer_capacity, int _camWidth, int _camHeight, int _desiredFrameRate) :
@@ -19,7 +22,7 @@ ofApp::ofApp(int _initial_buffer_capacity, int max_buffer_capacity, int _camWidt
 
 
 void ofApp::setup(){
-	ofSetFrameRate(desiredFrameRate);
+	//ofSetFrameRate(desiredFrameRate);
 	setupVideo();
 	setupGui();
 }
@@ -41,7 +44,7 @@ void ofApp::setupVideo()
 	}
 
 	vidGrabber.setDeviceID(0);
-	vidGrabber.setDesiredFrameRate(60);
+	vidGrabber.setDesiredFrameRate(desiredFrameRate);
 	vidGrabber.initGrabber(camWidth,camHeight);
 	ofSetVerticalSync(true);
 }
@@ -54,7 +57,7 @@ void ofApp::setupGui()
 	gui.setBackgroundColor(ofColor::darkMagenta);
 	gui.setDefaultWidth(240);
 	gui.add(delay.setup("delay",initial_buffer_capacity,1,buffer.capacity()));
-	//gui.add(fps.setup("frames p. segundo", ""));
+	gui.add(fps.setup("frames p. segundo", ""));
 
 	// Texto
 	ofTrueTypeFont::setGlobalDpi(72);
@@ -92,9 +95,21 @@ void ofApp::update(){
 			ofImage image; 
 			image.setFromPixels(vidGrabber.getPixels(), camWidth, camHeight, OF_IMAGE_COLOR);
 			buffer.push_back(image);
+			if (FirstTime)
+			{
+				timeThen = ofGetSystemTime();
+				FirstTime = false;
+				framesPerSecond = 10; // Best guess...will improve later.
+			}
+			else
+			{
+				timeNow = ofGetSystemTime();
+				unsigned long long deltaTime = timeNow - timeThen;
+				timeThen = timeNow;
+				framesPerSecond = framesPerSecond*0.99 + (1000.0/deltaTime)*0.01; 
+			}
+			fps = ofToString(framesPerSecond);
 	}
-
-	//fps = ofToString(ofGetFrameRate());
 }
 
 //--------------------------------------------------------------

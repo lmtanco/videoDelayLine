@@ -1,6 +1,7 @@
 #include "ofMain.h"
 #include "ofApp.h"
 
+// TODO: Take these from the command line
 const int initial_buffer_capacity = 500;
 const int max_buffer_capacity = 1000;
 const int captureWidth = 640;
