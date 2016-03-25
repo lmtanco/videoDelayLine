@@ -61,7 +61,7 @@ void ofApp::setupGui()
 
 	// Texto
 	ofTrueTypeFont::setGlobalDpi(72);
-	verdana30.loadFont("verdana.ttf", 30, true, true);
+	verdana30.load("verdana.ttf", 30, true, true);
 	verdana30.setLineHeight(34.0f);
 	verdana30.setLetterSpacing(1.035);
 
