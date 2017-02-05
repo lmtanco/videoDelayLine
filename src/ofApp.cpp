@@ -92,8 +92,8 @@ void ofApp::update(){
 	vidGrabber.update();
 	
 	if (vidGrabber.isFrameNew()){
-			ofImage image; 
-			image.setFromPixels(vidGrabber.getPixels(), camWidth, camHeight, OF_IMAGE_COLOR);
+			ofImage image;
+            image.setFromPixels(vidGrabber.getPixels());
 			buffer.push_back(image);
 			if (FirstTime)
 			{
