@@ -2,13 +2,19 @@
 
 #include "ofMain.h"
 #include "ofxGui.h"
-#include <boost/circular_buffer.hpp>
+//#include <boost/circular_buffer.hpp>
+
+template <typename T> struct myBuffer
+{
+    size_t capacity;
+    std::deque<T> data;
+};
 
 class ofApp : public ofBaseApp{
 	
 	public:
 
-		ofApp(int initial_buffer_capacity, int max_buffer_capacity, int _camWidth, int _camHeight, int _desiredFrameRate);
+		ofApp(int initial_buffer_capacity, int _camWidth, int _camHeight, int _desiredFrameRate);
 		
 		void setup();
 		void update();
@@ -31,8 +37,8 @@ class ofApp : public ofBaseApp{
 		void drawMessage(const string & msg, bool feedbacktime);
 
 		ofVideoGrabber 					vidGrabber;
-		boost::circular_buffer<ofImage>	buffer;
-		int initial_buffer_capacity;
+		myBuffer<ofImage>               buffer;
+    int                             initial_buffer_capacity;
 		int 							camWidth;
 		int 							camHeight;
 		int								videoWidth;

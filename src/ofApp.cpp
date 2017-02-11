@@ -6,8 +6,7 @@ static bool FirstTime = true;
 static double framesPerSecond = 0;
 
 //--------------------------------------------------------------
-ofApp::ofApp(int _initial_buffer_capacity, int max_buffer_capacity, int _camWidth, int _camHeight, int _desiredFrameRate) :
-	buffer(max_buffer_capacity),
+ofApp::ofApp(int _initial_buffer_capacity, int _camWidth, int _camHeight, int _desiredFrameRate) :
 	initial_buffer_capacity(_initial_buffer_capacity),
 	camWidth(_camWidth),
 	camHeight(_camHeight),
@@ -18,6 +17,7 @@ ofApp::ofApp(int _initial_buffer_capacity, int max_buffer_capacity, int _camWidt
 {
 	// Capacity of buffer is _initial_capacity
 	// Size is however 0 (no images in the buffer yet)
+    buffer.capacity=_initial_buffer_capacity;
 }
 
 
@@ -56,7 +56,7 @@ void ofApp::setupGui()
 	gui.setup();
 	gui.setBackgroundColor(ofColor::darkMagenta);
 	gui.setDefaultWidth(240);
-	gui.add(delay.setup("delay",initial_buffer_capacity,1,buffer.capacity()));
+	gui.add(delay.setup("delay",initial_buffer_capacity,1,buffer.capacity));
 	gui.add(fps.setup("frames p. segundo", ""));
 
 	// Texto
@@ -69,20 +69,21 @@ void ofApp::setupGui()
 
 void ofApp::delayChanged(int & _delay)
 {
-	static bool firstime = true;
-	std::cout << "************* new delay: " << _delay << endl;; 
+//	static bool firstime = true;
+//	std::cout << "************* new delay: " << _delay << endl;; 
+//
+//	// Do I want rset_capacity or set_capacity?
+//	if (firstime) {
+//		buffer.capacity = initial_buffer_capacity;
+//		firstime= false;
+//	}
+//	else { 
+//		buffer.set_capacity(_delay);
+//	}
 
-	// Do I want rset_capacity or set_capacity?
-	if (firstime) {
-		buffer.set_capacity(initial_buffer_capacity);
-		firstime= false;
-	}
-	else { 
-		buffer.set_capacity(_delay);
-	}
-
-	std::cout << "************* buffer.size: " << buffer.size() << endl
-			  << "************* buffer.capacity: " << buffer.capacity() << endl; 
+    buffer.capacity = _delay;
+	std::cout << "************* buffer.size: " << buffer.data.size() << endl
+			  << "************* buffer.capacity: " << buffer.capacity << endl;
 }
 
 //--------------------------------------------------------------
@@ -94,7 +95,7 @@ void ofApp::update(){
 	if (vidGrabber.isFrameNew()){
 			ofImage image;
             image.setFromPixels(vidGrabber.getPixels());
-			buffer.push_back(image);
+			buffer.data.push_back(image);
 			if (FirstTime)
 			{
 				timeThen = ofGetSystemTime();
@@ -116,7 +117,7 @@ void ofApp::update(){
 void ofApp::draw(){
 	gui.draw();
 		// Only start drawing if buffer is full;
-	if (buffer.size() < buffer.capacity()) {
+	if (buffer.data.size() < buffer.capacity) {
 		string msg = "Espera, estoy capturando...";
 //		float queda = (buffer.capacity() - buffer.size());
 		ofRectangle rect = verdana30.getStringBoundingBox(msg,0,0);
@@ -125,7 +126,9 @@ void ofApp::draw(){
 	else {
 		ofScale(-1.0,1.0);
 		ofTranslate(-ofGetWidth(),0);
-		buffer.front().draw(0,0,videoWidth,videoHeight);
+		//buffer.front().draw(0,0,videoWidth,videoHeight);
+        buffer.data.at(0).draw(0,0, videoWidth, videoWidth);
+        buffer.data.pop_front();
 	}
 }
 
