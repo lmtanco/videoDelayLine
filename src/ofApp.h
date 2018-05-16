@@ -4,6 +4,7 @@
 #include "ofxGui.h"
 #include <boost/circular_buffer.hpp>
 
+
 class ofApp : public ofBaseApp{
 	
 	public:
@@ -14,7 +15,7 @@ class ofApp : public ofBaseApp{
 		void update();
 		void draw();
 		
-		void keyPressed(int key);
+		void keyPressed(ofKeyEventArgs & e);
 		void keyReleased(int key);
 		void mouseMoved(int x, int y );
 		void mouseDragged(int x, int y, int button);
@@ -27,7 +28,7 @@ class ofApp : public ofBaseApp{
 		void setupVideo();
 		void setupGui();
 
-		void delayChanged(int &);
+		void delayChanged(float &);
 		void drawMessage(const string & msg, bool feedbacktime);
 
 		ofVideoGrabber 					vidGrabber;
@@ -37,7 +38,8 @@ class ofApp : public ofBaseApp{
 		int 							camHeight;
 		int								videoWidth;
 		int								videoHeight;
-		ofxIntSlider					delay;
+		//ofxFloatSlider					delay;
+        ofParameter<float>              delay;
 		ofxLabel						fps;
 		ofxPanel						gui;
 		ofTrueTypeFont					verdana30;
