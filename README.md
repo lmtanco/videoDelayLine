@@ -19,6 +19,6 @@ OSX
 WINDOWS
 -------
 
-* Download boost 
+* Download boost from https://dl.bintray.com/boostorg/release/1.67.0/source/
 * Build it following instructions (I just had to do ./bootstrap.bat and ./b2) (it will take a LOT of time to build)
 * substitute OF_ROOT/libs/boost/include and OF_ROOT/libs/boost/lib with the full version of boost that you downloaded and compiled. 
