@@ -15,6 +15,12 @@ build/
 [Bb]in/
 [Oo]bj/
 
+#unignore bin/data for Windows
+!bin/data/
+!bin/data/*
+!Bin/data/
+!Bin/data/*
+
 # Enable "build/" folder in the NuGet Packages folder since NuGet packages use it for MSBuild targets
 !packages/*/build/
 
@@ -158,3 +164,4 @@ $RECYCLE.BIN/
 *.plist
 *.xcuserstate
 *.xcbkptlist
+.vs/

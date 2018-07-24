@@ -36,7 +36,7 @@ void ofApp::setupVideo()
 	//we can now get back a list of devices. 
 	vector<ofVideoDevice> devices = vidGrabber.listDevices();
 
-	for(int i = 0; i < devices.size(); i++){
+	for(int unsigned i = 0; i < devices.size(); i++){
 		cout << devices[i].id << ": " << devices[i].deviceName; 
 		if( devices[i].bAvailable ){
 			cout << endl;
@@ -55,9 +55,10 @@ void ofApp::setupVideo()
 		}
 	}
 
-	vidGrabber.setDeviceID(2);
+	vidGrabber.setDeviceID(0);
 	vidGrabber.setDesiredFrameRate(desiredFrameRate);
-	vidGrabber.initGrabber(camWidth,camHeight);
+	//vidGrabber.initGrabber(camWidth,camHeight);
+	vidGrabber.setup(camWidth, camHeight);
 	ofSetVerticalSync(true);
 }
 
@@ -135,9 +136,11 @@ void ofApp::draw(){
 		// Only start drawing if buffer is full;
 	if (buffer.size() < buffer.capacity()) {
 		string msg = "Espera, estoy capturando...";
-//		float queda = (buffer.capacity() - buffer.size());
-		ofRectangle rect = verdana30.getStringBoundingBox(msg,0,0);
-		verdana30.drawString(msg /* + ofToString(queda,0)*/, ofGetWidth()/2 - rect.width/2,ofGetHeight()/2- rect.height);
+		//		float queda = (buffer.capacity() - buffer.size());
+		if (verdana30.isLoaded()) {
+		ofRectangle rect = verdana30.getStringBoundingBox(msg, 0, 0);
+		verdana30.drawString(msg /* + ofToString(queda,0)*/, ofGetWidth() / 2 - rect.width / 2, ofGetHeight() / 2 - rect.height);
+	}
 	}
 	else {
         double scale = (double)ofGetHeight() / videoHeight;
