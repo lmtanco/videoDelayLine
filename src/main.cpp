@@ -13,9 +13,9 @@ const int desiredFrameRate = 30;
 int main( ){
 
 //#ifndef NDEBUG
-   ofSetupOpenGL(1024,768, OF_WINDOW);            // <-------- setup the GL context
+//   ofSetupOpenGL(1024,768, OF_WINDOW);            // <-------- setup the GL context
 //#else
-//	ofSetupOpenGL(1024,768,OF_FULLSCREEN); // w and h are ignored
+	ofSetupOpenGL(1024,768,OF_FULLSCREEN); // w and h are ignored
 //#endif
 	// this kicks off the running of my app
 	// can be OF_WINDOW or OF_FULLSCREEN
