@@ -1,8 +1,12 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
+VisualStudioVersion = 15.0.27428.2027
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "videoDelayLine", "videoDelayLine.vcxproj", "{7FD42DF7-442E-479A-BA76-D0022F99702A}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "openframeworksLib", "..\..\..\libs\openFrameworksCompiled\project\vs\openframeworksLib.vcxproj", "{5837595D-ACA9-485C-8E76-729040CE4B0B}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "videoDelayLineInstaller", "installer\videoDelayLineInstaller.vdproj", "{A574AEDE-7A7F-4D72-BC23-A7A9E6E00EB1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -28,8 +32,15 @@ Global
 		{5837595D-ACA9-485C-8E76-729040CE4B0B}.Release|Win32.Build.0 = Release|Win32
 		{5837595D-ACA9-485C-8E76-729040CE4B0B}.Release|x64.ActiveCfg = Release|x64
 		{5837595D-ACA9-485C-8E76-729040CE4B0B}.Release|x64.Build.0 = Release|x64
+		{A574AEDE-7A7F-4D72-BC23-A7A9E6E00EB1}.Debug|Win32.ActiveCfg = Debug
+		{A574AEDE-7A7F-4D72-BC23-A7A9E6E00EB1}.Debug|x64.ActiveCfg = Debug
+		{A574AEDE-7A7F-4D72-BC23-A7A9E6E00EB1}.Release|Win32.ActiveCfg = Release
+		{A574AEDE-7A7F-4D72-BC23-A7A9E6E00EB1}.Release|x64.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9C8DFD1E-AF5E-454D-A699-0E0471F7B935}
 	EndGlobalSection
 EndGlobal
