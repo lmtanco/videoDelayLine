@@ -44,5 +44,6 @@ class ofApp : public ofBaseApp{
 		ofxPanel						gui;
 		ofTrueTypeFont					verdana30;
 		int desiredFrameRate;
+		bool mirror; 
 
 };

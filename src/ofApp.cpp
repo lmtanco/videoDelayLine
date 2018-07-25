@@ -15,7 +15,8 @@ ofApp::ofApp(int _initial_buffer_capacity, int max_buffer_capacity, int _camWidt
     videoWidth(_camWidth),
 	//videoHeight(ofGetHeight()),
     videoHeight(_camHeight),
-	desiredFrameRate(_desiredFrameRate)
+	desiredFrameRate(_desiredFrameRate),
+	mirror(true)
 
 {
 	// Capacity of buffer is _initial_capacity
@@ -144,8 +145,14 @@ void ofApp::draw(){
 	}
 	else {
         double scale = (double)ofGetHeight() / videoHeight;
-		ofScale(-scale,scale);
-		ofTranslate(-ofGetWidth()/(double)scale,0.667*gui.getHeight()/((double)scale));
+		if (mirror) {
+			ofScale(-scale, scale);
+			ofTranslate(-ofGetWidth() / (double)scale, 0.667*gui.getHeight() / ((double)scale));
+		}
+		else {
+			ofScale(scale, scale);
+			ofTranslate(0, 0.667*gui.getHeight() / ((double)scale));
+		}
 		buffer.front().draw(0,0,videoWidth,videoHeight);
 	}
 }
@@ -176,6 +183,9 @@ void ofApp::keyPressed  (ofKeyEventArgs & e){
     }
     else if (e.key == OF_KEY_UP || e.key == '+') delay++;
     else if (e.key == OF_KEY_DOWN || e.key == '-') delay--;
+	else if (e.key == 'm') {
+		mirror ^= true;
+	}
 	
 }
 
