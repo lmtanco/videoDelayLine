@@ -27,9 +27,15 @@ class ofApp : public ofBaseApp{
 
 		void setupVideo();
 		void setupGui();
+		void resizeGui();
 
 		void delayChanged(float &);
 		void drawMessage(const string & msg, bool feedbacktime);
+
+		void drawGrid();
+		void drawGrid2();
+		void configGrid();
+		void drawLine();
 
 		ofVideoGrabber 					vidGrabber;
 		boost::circular_buffer<ofImage>	buffer;
@@ -42,8 +48,16 @@ class ofApp : public ofBaseApp{
         ofParameter<float>              delay;
 		ofxLabel						fps;
 		ofxPanel						gui;
+		ofxLabel						keyHelper;
 		ofTrueTypeFont					verdana30;
 		int desiredFrameRate;
 		bool mirror; 
 
+		// LINES
+		ofPolyline line;
+		std::vector <ofPolyline> polylines;
+		//ofPath path;
+
+		int grids;
+		std::vector <ofPolyline> gridLines;
 };

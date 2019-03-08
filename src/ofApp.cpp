@@ -12,15 +12,18 @@ ofApp::ofApp(int _initial_buffer_capacity, int max_buffer_capacity, int _camWidt
 	camWidth(_camWidth),
 	camHeight(_camHeight),
 	//videoWidth(ofGetWidth()*_camHeight/_camWidth),
-    videoWidth(_camWidth),
+	videoWidth(_camWidth),
 	//videoHeight(ofGetHeight()),
-    videoHeight(_camHeight),
+	videoHeight(_camHeight),
 	desiredFrameRate(_desiredFrameRate),
-	mirror(true)
+	mirror(true),
+	grids(1)
 
 {
 	// Capacity of buffer is _initial_capacity
 	// Size is however 0 (no images in the buffer yet)
+
+
 }
 
 
@@ -28,6 +31,9 @@ void ofApp::setup(){
 	//ofSetFrameRate(desiredFrameRate);
 	setupVideo();
 	setupGui();
+
+	// have at least one polyline in the vector so we can add points to it
+	polylines.push_back(ofPolyline());
 }
 
 
@@ -75,6 +81,7 @@ void ofApp::setupGui()
                         1.0,
                         (float)buffer.capacity()/desiredFrameRate));
 	gui.add(fps.setup("fps", ""));
+	gui.add(keyHelper.setup("Mirror (on/off): 'm'  -  Grid (modes): 'g'  -  Clear lines: 'c'", ""));
 
 	// Texto
 	ofTrueTypeFont::setGlobalDpi(72);
@@ -82,6 +89,10 @@ void ofApp::setupGui()
 	verdana30.setLineHeight(34.0f);
 	verdana30.setLetterSpacing(1.035);
 
+}
+
+void ofApp::resizeGui() {
+	gui.setDefaultWidth(ofGetWidth() - 10);
 }
 
 void ofApp::delayChanged(float & _delay)
@@ -105,7 +116,7 @@ void ofApp::delayChanged(float & _delay)
 }
 
 //--------------------------------------------------------------
-void ofApp::update(){
+void ofApp::update() {
 	
 	ofBackground(50,50,50);
 	vidGrabber.update();
@@ -129,21 +140,29 @@ void ofApp::update(){
 			}
 			fps = ofToString(framesPerSecond);
 	}
+
+	// shake all the points in the line being drawn
+	// iterate over all vertices from the latest line
+	for (auto & v : polylines.back().getVertices()) {
+		v.x += ofRandom(-0.5, 0.5);
+		v.y += ofRandom(-0.5, 0.5);
+	}
 }
 
 //--------------------------------------------------------------
-void ofApp::draw(){
-	gui.draw();
-		// Only start drawing if buffer is full;
+void ofApp::draw() {
+
+	//gui.draw();
+	ofPushMatrix();	
+	// Only start drawing if buffer is full;
 	if (buffer.size() < buffer.capacity()) {
 		string msg = "Espera, estoy capturando...";
 		//		float queda = (buffer.capacity() - buffer.size());
 		if (verdana30.isLoaded()) {
-		ofRectangle rect = verdana30.getStringBoundingBox(msg, 0, 0);
-		verdana30.drawString(msg /* + ofToString(queda,0)*/, ofGetWidth() / 2 - rect.width / 2, ofGetHeight() / 2 - rect.height);
-	}
-	}
-	else {
+			ofRectangle rect = verdana30.getStringBoundingBox(msg, 0, 0);
+			verdana30.drawString(msg /* + ofToString(queda,0)*/, ofGetWidth() / 2 - rect.width / 2, ofGetHeight() / 2 - rect.height);
+		}
+	} else {
         double scale = (double)ofGetHeight() / videoHeight;
 		if (mirror) {
 			ofScale(-scale, scale);
@@ -154,13 +173,50 @@ void ofApp::draw(){
 			ofTranslate(0, 0.667*gui.getHeight() / ((double)scale));
 		}
 		buffer.front().draw(0,0,videoWidth,videoHeight);
+				
 	}
+	ofPopMatrix();
+	
+	drawGrid2();
+	drawLine();
+	gui.draw();
+	
 }
 
 void ofApp::drawMessage(const string& msg, bool feedbacktime)
 {
 }
 
+void ofApp::drawGrid() {
+	//ofTranslate(0, gui.getHeight());
+	if (grids > 1) {
+		float stepSize = ofGetWidth() / grids;
+		size_t numberOFSteps = (float)grids + 0.5f; 		
+		ofDrawGrid(stepSize, numberOFSteps, false, false, false, true);
+		//ofDrawGrid(ofGetWidth() / 5, 5.5f, false, false, false, true);
+	}	
+}
+
+void ofApp::drawGrid2() {
+	ofSetColor(ofColor::cyan);
+	ofSetLineWidth(4);
+	ofTranslate(0, gui.getHeight());
+	for (auto & line : gridLines) {
+		line.draw();
+	}
+	ofTranslate(0, -gui.getHeight());
+	ofSetColor(ofColor::white);
+}
+
+
+void ofApp::drawLine() {
+	ofSetColor(ofColor::red);
+	ofSetLineWidth(8);
+	for (auto & line : polylines) {
+		line.draw();
+	}
+	ofSetColor(ofColor::white);
+}
 //--------------------------------------------------------------
 void ofApp::keyPressed  (ofKeyEventArgs & e){
 	
@@ -185,8 +241,40 @@ void ofApp::keyPressed  (ofKeyEventArgs & e){
     else if (e.key == OF_KEY_DOWN || e.key == '-') delay--;
 	else if (e.key == 'm') {
 		mirror ^= true;
+	} 
+	else if (e.key == 'g') {
+		grids++;
+		gridLines.clear();
+		if (grids > 5) { 
+			grids = 1; 
+		}
+		else 
+		{
+			configGrid();
+		}
 	}
-	
+	else if (e.key == 'c') {
+		polylines.clear();
+		polylines.push_back(ofPolyline());
+	}	
+}
+
+void ofApp::configGrid() {
+	gridLines.clear();
+	// Horizontal Lines
+	float stepHorizontalLines = ofGetHeight() / grids;
+	for (int i = 1; i < grids; i++) {
+		gridLines.push_back(ofPolyline());	// Horizontal		
+		gridLines.back().addVertex(0.0f, (0.0f + stepHorizontalLines * i));
+		gridLines.back().addVertex(ofGetWidth(), (0.0f + stepHorizontalLines * i));
+	}
+	// Vertical Lines
+	float stepVerticalSize = ofGetWidth() / grids;
+	for (int i = 1; i < grids; i++) {
+		gridLines.push_back(ofPolyline());	// Horizontal		
+		gridLines.back().addVertex((0.0f + stepVerticalSize * i), 0.0f);
+		gridLines.back().addVertex((0.0f + stepVerticalSize * i), ofGetHeight());
+	}		
 }
 
 //--------------------------------------------------------------
@@ -202,21 +290,32 @@ void ofApp::mouseMoved(int x, int y ){
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button){
 	
+
+	//ofPoint pt;
+	//pt.set(x, y);
+	//line.addVertex(pt);
+
+	// add a vertex and simplify the line being drawn
+	polylines.back().addVertex(x, y);
+	polylines.back().simplify(10);
+	// cout << "x: " << x << " y: " << y << endl;
 }
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
-	
+	//line.clear();
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button){
-
+	// add a new line to the vector
+	polylines.push_back(ofPolyline());
 }
 
 //--------------------------------------------------------------
 void ofApp::windowResized(int w, int h){
-
+	configGrid();	
+	resizeGui();
 }
 
 //--------------------------------------------------------------
@@ -228,3 +327,5 @@ void ofApp::gotMessage(ofMessage msg){
 void ofApp::dragEvent(ofDragInfo dragInfo){ 
 
 }
+
+
